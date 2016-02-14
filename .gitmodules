@@ -1,0 +1,6 @@
+[submodule "third_party/llvm"]
+	path = third_party/llvm
+	url = git@github.com:llvm-mirror/llvm.git
+[submodule "third_party/PEGTL"]
+	path = third_party/PEGTL
+	url = git@github.com:ColinH/PEGTL.git
