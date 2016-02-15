@@ -26,3 +26,12 @@
 *.exe
 *.out
 *.app
+
+# Build directory
+build
+
+# Visual Studio files
+*.sdf
+*.opendb
+.vs
+*.user
