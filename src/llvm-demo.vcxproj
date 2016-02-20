@@ -69,8 +69,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)third_party\llvm\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)third_party\llvm\Debug\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)third_party\libffi\win32\vc14_x86\Debug;$(SolutionDir)third_party\llvm\build\Debug\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\artifacts\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -80,9 +80,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\PEGTL;$(SolutionDir)third_party\llvm\include;$(SolutionDir)third_party\llvm\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>LLVMCore.lib;LLVMExecutionEngine.lib;LLVMInterpreter.lib;LLVMMC.lib;LLVMSupport.lib;LLVMX86CodeGen.lib;LLVMX86Desc.lib;LLVMX86Info.lib;LLVMRuntimeDyld.lib;LLVMMCDisassembler.lib;LLVMAsmPrinter.lib;LLVMSelectionDAG.lib;LLVMCodeGen.lib;LLVMTarget.lib;LLVMInstrumentation.lib;LLVMScalarOpts.lib;LLVMInstCombine.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMBitReader.lib;LLVMMCParser.lib;LLVMTransformUtils.lib;LLVMipa.lib;LLVMAnalysis.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LLVMCore.lib;LLVMExecutionEngine.lib;LLVMInterpreter.lib;LLVMMC.lib;LLVMSupport.lib;LLVMX86CodeGen.lib;LLVMX86Desc.lib;LLVMX86Info.lib;LLVMRuntimeDyld.lib;LLVMMCDisassembler.lib;LLVMAsmPrinter.lib;LLVMSelectionDAG.lib;LLVMCodeGen.lib;LLVMTarget.lib;LLVMInstrumentation.lib;LLVMScalarOpts.lib;LLVMInstCombine.lib;LLVMProfileData.lib;LLVMObject.lib;LLVMBitReader.lib;LLVMMCParser.lib;LLVMTransformUtils.lib;LLVMipa.lib;LLVMAnalysis.lib;LLVMX86AsmPrinter.lib;LLVMX86Utils.lib;libffi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,6 +121,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="grammar.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

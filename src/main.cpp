@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
@@ -13,6 +14,8 @@
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/raw_ostream.h"
 
+#include "grammar.cpp"
+
 using namespace llvm;
 
 int main() 
@@ -24,48 +27,31 @@ int main()
 	auto owner = make_unique<Module>("test", Context);
 	auto module = owner.get();
 
-	auto addFunction =
-		cast<Function>(module->getOrInsertFunction("add", Type::getInt32Ty(Context),
-			Type::getInt32Ty(Context),
-			Type::getInt32Ty(Context),
-			(Type *)0));
-
-	auto block = BasicBlock::Create(Context, "EntryBlock", addFunction);
-	IRBuilder<> builder(block);
-
-	assert(addFunction->arg_begin() != addFunction->arg_end());
-	auto firstArg = addFunction->arg_begin();
-	firstArg->setName("x");
-	auto secondArg = firstArg->getNextNode();
-	secondArg->setName("y");
-
-	auto add = builder.CreateAdd(firstArg, secondArg);
-	builder.CreateRet(add);
+	auto printFunction = 
+		cast<Function>(module->getOrInsertFunction("puts", Type::getInt32Ty(Context),
+			Type::getInt8PtrTy(Context),
+			(Type*) 0));
 
 	auto mainFunction =
 		cast<Function>(module->getOrInsertFunction("main", Type::getInt32Ty(Context),
 			(Type *)0));
 
-	block = BasicBlock::Create(Context, "EntryBlock", mainFunction);
-	builder.SetInsertPoint(block);
+	auto block = BasicBlock::Create(Context, "EntryBlock", mainFunction);
+	IRBuilder<> builder(block);
 
-	auto firstInt = builder.getInt32(3);
-	auto secondInt = builder.getInt32(4);
+	char** input = new char*[1];
+	input[0] = "print 'test'";
+	pegtl::parse<affinity::grammar, affinity::action>(0, input, builder, printFunction, affinity::expression());
 
-	std::vector<Value*> addArgs { firstInt, secondInt };
-
-	auto addCallRes = builder.CreateCall(addFunction, addArgs);
-	addCallRes->setTailCall(true);
-	builder.CreateRet(addCallRes);
+	builder.CreateRet(builder.getInt32(0));
 
 	auto engine = EngineBuilder(std::move(owner)).create();
 
 	std::vector<GenericValue> noargs;
 	auto gv = engine->runFunction(mainFunction, noargs);
 
-	// Import result of execution:
-	std::cout << "Result: " << gv.IntVal.getSExtValue() << "\n";
 	delete engine;
+	delete input;
 	llvm_shutdown();
 	return 0;
 }
