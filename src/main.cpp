@@ -12,9 +12,8 @@
 #include "llvm/IR/Module.h"
 #include "llvm/Support/ManagedStatic.h"
 #include "llvm/Support/TargetSelect.h"
-#include "llvm/Support/raw_ostream.h"
 
-#include "grammar.cpp"
+#include "grammar.h"
 
 using namespace llvm;
 
