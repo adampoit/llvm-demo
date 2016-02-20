@@ -40,7 +40,7 @@ int main()
 	IRBuilder<> builder(block);
 
 	char** input = new char*[1];
-	input[0] = "print 'test'";
+	input[0] = "print 'This is a test'";
 	pegtl::parse<affinity::grammar, affinity::action>(0, input, builder, printFunction, affinity::expression());
 
 	builder.CreateRet(builder.getInt32(0));

@@ -38,7 +38,7 @@ namespace affinity
 
 	struct str_print : pegtl_string_t("print") {};
 
-	struct str_content : pegtl::plus<pegtl::alpha> {};
+	struct str_content : pegtl::plus<pegtl::alpha, seps> {};
 	struct str_literal : pegtl::seq<pegtl::one<'\''>, str_content, pegtl::one<'\''>> {};
 
 	template<typename Key>
