@@ -1,3 +1,9 @@
 [submodule "third_party/PEGTL"]
 	path = third_party/PEGTL
 	url = git@github.com:ColinH/PEGTL.git
+[submodule "third_party/libffi"]
+	path = third_party/libffi
+	url = git@github.com:adampoit/libffi.git
+[submodule "third_party/llvm"]
+	path = third_party/llvm
+	url = git@github.com:adampoit/llvm.git
