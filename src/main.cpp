@@ -26,31 +26,27 @@ int main()
 	auto owner = make_unique<Module>("test", Context);
 	auto module = owner.get();
 
+	auto engine = EngineBuilder(std::move(owner)).create();
+
 	auto printFunction = 
 		cast<Function>(module->getOrInsertFunction("puts", Type::getInt32Ty(Context),
 			Type::getInt8PtrTy(Context),
 			(Type*) 0));
 
-	auto mainFunction =
-		cast<Function>(module->getOrInsertFunction("main", Type::getInt32Ty(Context),
-			(Type *)0));
+	std::string input;
+	std::cout << ">";
+	while (true)
+	{
+		std::getline(std::cin, input);
+		if (input == "exit")
+			break;
 
-	auto block = BasicBlock::Create(Context, "EntryBlock", mainFunction);
-	IRBuilder<> builder(block);
-
-	char** input = new char*[1];
-	input[0] = "print 'This is a test'";
-	pegtl::parse<affinity::grammar, affinity::action>(0, input, builder, printFunction, affinity::expression());
-
-	builder.CreateRet(builder.getInt32(0));
-
-	auto engine = EngineBuilder(std::move(owner)).create();
-
-	std::vector<GenericValue> noargs;
-	auto gv = engine->runFunction(mainFunction, noargs);
+		pegtl::parse<affinity::grammar, affinity::action>(input, input, module, Context, engine, affinity::expression());
+		
+		std::cout << ">";
+	}
 
 	delete engine;
-	delete input;
 	llvm_shutdown();
 	return 0;
 }
