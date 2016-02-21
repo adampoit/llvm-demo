@@ -8,7 +8,7 @@
 
 using namespace llvm;
 
-std::string func_name(size_t length)
+std::string unique_identifier(size_t length)
 {
 	auto randchar = []() -> char
 	{
@@ -48,8 +48,7 @@ namespace affinity
 
 	struct str_print : pegtl::string<'p', 'r', 'i', 'n', 't'> {};
 
-	struct str_content : pegtl::plus<pegtl::alpha, seps> {};
-	struct str_literal : pegtl::seq<pegtl::one<'\''>, str_content, pegtl::one<'\''>> {};
+	struct str_literal : pegtl::seq<pegtl::one<'"'>, pegtl::until<pegtl::one<'"'>>> {};
 
 	template<typename Key>
 	struct key : pegtl::seq<Key, pegtl::not_at<pegtl::identifier_other>> {};
@@ -63,11 +62,11 @@ namespace affinity
 	template<typename Rule>
 	struct action : pegtl::nothing<Rule> {};
 
-	template<> struct action<str_content>
+	template<> struct action<str_literal>
 	{
 		static void apply(const pegtl::input& in, Module* module, LLVMContext& context, ExecutionEngine* engine, expression& expression)
 		{
-			expression.set(in.string());
+			expression.set(in.string().substr(1, in.string().size() - 2));
 		}
 	};
 
@@ -76,7 +75,7 @@ namespace affinity
 		static void apply(const pegtl::input& in, Module* module, LLVMContext& context, ExecutionEngine* engine, expression& expression)
 		{
 			auto function =
-				cast<Function>(module->getOrInsertFunction(func_name(10), Type::getInt32Ty(context),
+				cast<Function>(module->getOrInsertFunction(unique_identifier(10), Type::getInt32Ty(context),
 					(Type *)0));
 
 			auto printFunction =
@@ -88,7 +87,7 @@ namespace affinity
 			IRBuilder<> builder(block);
 
 			auto string = expression.get();
-			auto stringPtr = builder.CreateGlobalStringPtr(string, string);
+			auto stringPtr = builder.CreateGlobalStringPtr(string, unique_identifier(10));
 
 			auto callRes = builder.CreateCall(printFunction, stringPtr);
 
