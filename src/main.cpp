@@ -17,6 +17,12 @@
 
 using namespace llvm;
 
+extern "C"
+int print(const char* string)
+{
+	return puts(string);
+}
+
 int main() 
 {
 	InitializeNativeTarget();
@@ -29,9 +35,11 @@ int main()
 	auto engine = EngineBuilder(std::move(owner)).create();
 
 	auto printFunction = 
-		cast<Function>(module->getOrInsertFunction("puts", Type::getInt32Ty(Context),
+		cast<Function>(module->getOrInsertFunction("print", Type::getInt32Ty(Context),
 			Type::getInt8PtrTy(Context),
 			(Type*) 0));
+
+	engine->addGlobalMapping(printFunction, &print);
 
 	std::string input;
 	std::cout << ">";
@@ -41,7 +49,7 @@ int main()
 		if (input == "exit")
 			break;
 
-		pegtl::parse<affinity::grammar, affinity::action>(input, input, module, Context, engine, affinity::expression());
+		pegtl::parse<affinity::grammar, affinity::action>(input, input, module, Context, engine, affinity::expression(), affinity::expression());
 		
 		std::cout << ">";
 	}
