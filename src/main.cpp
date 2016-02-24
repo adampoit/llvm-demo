@@ -42,16 +42,14 @@ int main()
 	engine->addGlobalMapping(printFunction, &print);
 
 	std::string input;
-	std::cout << ">";
 	while (true)
 	{
+		std::cout << ">";
 		std::getline(std::cin, input);
 		if (input == "exit")
 			break;
 
 		pegtl::parse<affinity::grammar, affinity::action>(input, input, module, Context, engine, affinity::expression(), affinity::expression());
-		
-		std::cout << ">";
 	}
 
 	delete engine;

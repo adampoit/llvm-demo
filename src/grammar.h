@@ -87,7 +87,7 @@ namespace affinity
 			auto function = module->getFunction(functionName.get());
 			if (function == nullptr)
 			{
-				std::cout << "Unknown funtion: " << functionName.get() << std::endl;
+				std::cout << "Unknown function: " << functionName.get() << std::endl;
 			}
 			else
 			{
